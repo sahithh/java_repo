@@ -1,0 +1,14 @@
+---
+- hosts: localhost
+  become: true
+  tasks:
+  - name: Stopping  the running container
+    command: docker stop C1
+    ignore_errors: true
+  - name: Removing the Container
+    command: docker rm C1
+  - name: Remove the Older images
+    command: docker rmi dogra21703/java_code:latest
+    ignore_errors: true
+  - name: Start the new container
+    command: docker run -d -p 80:8080 --name C1 dogra21703/java_code:latest

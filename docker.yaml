@@ -1,0 +1,16 @@
+---
+- hosts: tomcat
+  become: true
+  tasks:
+  - name: Removing  stop Container
+    command: docker stop tomcat   #To stop the container
+    ignore_errors: true
+  - name: Remove the existing image
+    command:  docker rm tomcat #To remove the container
+    ignore_errors: true
+  - name: Remove image
+    command: docker rmi dogra21703/tomcat_test #To remove the image
+    ignore_errors: true
+  - name: Deploy Container
+    command: docker run  --name tomcat -d -p 8080:8080  dogra21703/tomcat_test #To pull & start the same container again
+    ignore_errors: true

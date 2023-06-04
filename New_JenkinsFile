@@ -1,0 +1,74 @@
+pipeline {
+    agent any
+    tools {
+  maven 'Maven'
+}
+    environment {
+  max_layer_size = "${max_layer_size}"
+}
+    
+    stages {
+        stage ('Git Clone') {
+            steps {
+                git 'https://github.com/SOHAN-cyber/java-repo.git'
+            }
+        }
+        stage ('Code Analysis') {
+            steps {
+sh 'mvn clean verify sonar:sonar -Dsonar.login=f8608405edc02ed7277311f9191ca19155f58cb1 -Dsonar.host.url=https://sonarcloud.io  -Dsonar.organization=sohan   -Dsonar.projectKey=sohan_sohan' 
+            }
+        }
+        stage ('Cred Scanner') {
+            steps {
+                sh 'gitleaks detect --report-format json --report-path=./report.json'
+            }
+        }
+        stage ('License Finder') {
+            steps {
+                sh 'license_finder report --format=html > license.html'
+            }
+        }
+        stage ('Checking Dockerfile') {
+            steps {
+                sh 'hadolint Dockerfile'
+            }
+        }
+        stage ('Creating a Docker Image') {
+            steps{
+               sh 'docker build -t dogra21703/tomcat_test:${BUILD_ID} .'
+               sh 'docker image tag dogra21703/tomcat_test:${BUILD_ID} dogra21703/tomcat_test:latest'
+            }
+        }
+        stage ('Scan Docker image') {
+            steps {
+                sh 'trivy image --ignorefile .trivyignore  -f json -o trivy-report.json dogra21703/tomcat_test:${BUILD_ID}'
+            }
+        }
+        stage ('Docker Images Size') {
+            steps {
+                sh 'sudo sh /home/ubuntu/docker.sh  ${max_layer_size}'
+            }
+        }
+        stage('Push Image') {
+            steps {
+                withCredentials([string(credentialsId: '30', variable: 'password')]) {
+                 sh 'docker login -u dogra21703 -p $password'
+                 sh 'docker push dogra21703/tomcat_test:${BUILD_ID}'
+                 sh 'docker push dogra21703/tomcat_test:latest'
+                }
+            }
+        }
+        stage('Deploy to k8s') {
+            steps {
+            sh 'export BUILD_ID=${BUILD_ID}'
+            sh 'echo $BUILD_ID'
+              sh  'envsubst < deployment.yaml  | kubectl apply -f -'
+            }
+        }
+    }
+    // post {
+    //     always{
+    //         // cleanWs()
+    //     }
+    // }
+}

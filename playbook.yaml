@@ -1,0 +1,16 @@
+---
+- hosts: 172.31.27.71
+  become: true
+  tasks:
+  - name: Removing  the existing file
+    file:
+      path: /opt/tomcat9/webapps/ROOT.war
+      state: absent
+    ignore_errors: true
+  - name: Copy the file
+    copy:
+      src: /var/lib/jenkins/workspace/Java/webapp/target/webapp.war
+      dest: /opt/tomcat9/webapps/ROOT.war
+    ignore_errors: true
+  - name: Restarting Tomcat
+    command: systemctl restart tomcat.service

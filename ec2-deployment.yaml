@@ -1,0 +1,17 @@
+---
+- hosts: 172.31.31.18
+  become: true
+  tasks:
+  - name: Removing the Older WAR file
+    file:
+     path: /opt/tomcat9/webapps/ROOT.war
+     state: absent
+    ignore_errors: true
+  - name: Copy the war file
+    copy:
+      src: /var/lib/jenkins/workspace/JAVA/webapp/target/webapp.war
+      dest: /opt/tomcat9/webapps/webapp.war
+  - name: Rename the file 
+    command: mv /opt/tomcat9/webapps/webapp.war /opt/tomcat9/webapps/ROOT.war
+  - name: Restart Tomcat Server
+    command: systemctl restart tomcat.service
