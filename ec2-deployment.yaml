@@ -1,5 +1,5 @@
 ---
-- host: 172.31.76.87
+- hosts: 172.31.76.87
   become: true
   tasks:
   - name: Removing the older .WAR file
