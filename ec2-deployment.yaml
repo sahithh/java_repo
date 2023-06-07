@@ -10,6 +10,8 @@
   - name: Copying the war file
     copy:
       src: /var/lib/jenkins/workspace/java/webapp/target/webapp.war
-      dest: /opt/tomcat9/webapps/ROOT.war
+      dest: /opt/tomcat9/webapps/webapp.war
+  - name: Rename the file
+    command: mv /opt/tomcat9/webapps/webapp.war /opt/tomcat9/webapps/ROOT.war
   - name: Restart Tomcat Server
     command: systemctl restart tomcat.service
