@@ -4,12 +4,12 @@
   tasks:
   - name: Removing the older .WAR file
     file:
-      path: /opt/apache-tomcat-9.0.75/webapps/ROOT.war
+      path: /opt/tomcat9/webapps/ROOT.war
       state: absent
     ignore_errors: true
   - name: Copying the war file
     copy:
       src: /var/lib/jenkins/workspace/java/webapp/target/webapp.war
-      dest: /opt/apache-tomcat-9.0.75/webapps/ROOT.war
+      dest: /opt/tomcat9/webapps/ROOT.war
   - name: Restart Tomcat Server
     command: systemctl restart tomcat.service
