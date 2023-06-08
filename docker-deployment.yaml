@@ -8,7 +8,7 @@
   - name: Removing the Container
     command: docker rm C1
   - name: Remove the Older images
-    command: docker rmi dogra21703/java_code:latest
+    command: docker rmi sahithh/java_code:latest
     ignore_errors: true
   - name: Start the new container
-    command: docker run -d -p 80:8080 --name C1 dogra21703/java_code:latest
+    command: docker run -d -p 80:8080 --name C1 sahithh/java_code:latest
