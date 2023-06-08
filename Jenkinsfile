@@ -12,7 +12,7 @@ pipeline{
         stage('Building Docker Image'){
             steps{
                 sh 'docker build -t sahithh/java_code:latest .'
-                sh 'docker image tag sahithh/java_code:latest docker push sahithh/java_code:${BUILD_NUMBER}'
+                sh 'docker image tag sahithh/java_code:latest sahithh/java_code:${BUILD_NUMBER}'
             }
         }
         stage('Push Docker Image'){
