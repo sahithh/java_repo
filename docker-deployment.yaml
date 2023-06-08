@@ -1,5 +1,5 @@
 ---
-- hosts: localhost
+- hosts: 172.31.76.87
   become: true
   tasks:
   - name: Stopping  the running container
