@@ -27,7 +27,7 @@ pipeline{
         }
         stage('Deploy to EC2'){
             steps{
-                sh 'ansible-playbook -i host docker-deployment.yaml'
+                ansiblePlaybook becomeUser: null, credentialsId: 'tomcat_privatekey', disableHostKeyChecking: true, installation: 'ansible', inventory: 'host', playbook: 'ec2-deployment.yaml'
             }
         }
     }
