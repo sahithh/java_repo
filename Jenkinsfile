@@ -27,7 +27,7 @@ pipeline{
         }
         stage('Deploy to EC2'){
             steps{
-                sh 'ansible-playbook -i host docker-deployment.yaml'
+                ansiblePlaybook credentialsId: 'jenkins_new', disableHostKeyChecking: true, installation: 'ansible', inventory: 'host', playbook: 'docker-deployment.yaml'
             }
         }
     }
