@@ -27,7 +27,7 @@ pipeline{
         }
         stage('Deploy to EC2'){
             steps{
-                sh 'ansible-playbook -i hosts docker-deployment.yaml'
+                sh 'ansible-playbook -i host docker-deployment.yaml'
             }
         }
     }
