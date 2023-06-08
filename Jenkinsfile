@@ -1,22 +1,33 @@
 pipeline{
     agent any
-    tools{
+    tool{
         maven 'maven'
     }
     stages{
         stage('Clone') {
             steps{
-                git branch: 'main', url: 'https://github.com/sahithh/java_repo.git'
+                git 'https://github.com/sahithh/java_repo.git'
             }
         }
-        stage('Build'){
+        stage('Building Docker Image'){
             steps{
-                sh 'mvn clean package'
+                sh 'docker build -t sahithh/java_code:latest .'
+                sh 'docker image tag sahithh/java_code:latest docker push sahithh/java_code:${BUILD_NUMBER}'
+            }
+        }
+        stage('Push Docker Image'){
+            steps{
+                withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]){
+                    sh 'docker login -u $USERNAME -p $PASSWORD'
+                    sh 'docker push sahithh/java_code:${BUILD_ID}'
+                    sh 'docker push sahithh/java_code:latest'
+                } 
+                
             }
         }
         stage('Deploy to EC2'){
             steps{
-                ansiblePlaybook becomeUser: null, credentialsId: 'tomcat_privatekey', disableHostKeyChecking: true, installation: 'ansible', inventory: 'host', playbook: 'ec2-deployment.yaml'
+                sh 'echo done'
             }
         }
     }
