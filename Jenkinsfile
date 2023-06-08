@@ -6,7 +6,7 @@ pipeline{
     stages{
         stage('Clone') {
             steps{
-                git 'https://github.com/sahithh/java_repo.git'
+                git branch: 'main', url: 'https://github.com/sahithh/java_repo.git'
             }
         }
         stage('Build'){
