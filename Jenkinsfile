@@ -16,7 +16,7 @@ pipeline{
         }
         stage('Deploy to EC2'){
             steps{
-                sh 'ansiblePlaybook becomeUser: null, credentialsId: 'tomcat_privatekey', disableHostKeyChecking: true, installation: 'ansible', inventory: 'host', playbook: 'ec2-deployment.yaml'
+                ansiblePlaybook becomeUser: null, credentialsId: 'tomcat_privatekey', disableHostKeyChecking: true, installation: 'ansible', inventory: 'host', playbook: 'ec2-deployment.yaml'
             }
         }
     }
